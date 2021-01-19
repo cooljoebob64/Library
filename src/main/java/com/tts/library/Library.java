@@ -1,6 +1,16 @@
 package com.tts.library;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Library {
+    private final String address;
+    private final ArrayList<Book> bookList;
+    private static String openingHours;
+
+    private final static String DEFAULT_HOURS = "9 AM to 5 PM daily";
+    private String currentHours;
+
     // Add the missing implementation to this class
 
     public static void main(String[] args) {
@@ -48,4 +58,77 @@ public class Library {
         System.out.println("Books available in the first library:");
         firstLibrary.printAvailableBooks();
     }
+
+    private static void printOpeningHours() {
+        System.out.println(openingHours);
+    }
+
+    private void printCurrentHours() {
+        if (currentHours != null) System.out.println(currentHours);
+        else printOpeningHours();
+    }
+
+    private void addBook(Book book) {
+        bookList.add(book);
+    }
+
+    public Library(String address) {
+        this.address = address;
+        bookList = new ArrayList<>();
+        openingHours = DEFAULT_HOURS;
+    }
+
+    public Library(String address, String hours) {
+        this(address);
+        currentHours = hours;
+    }
+
+    private void printAddress() {
+        System.out.println(this.address);
+    }
+
+    private void borrowBook(String book) {
+        boolean inCatalog = false;
+        for (Book shelfBook : bookList) {
+            if (shelfBook.getTitle().equalsIgnoreCase(book)
+            ) {
+                inCatalog = true;
+                System.out.println("Fount the listing! Let me see here...");
+                if (shelfBook.isBorrowed()) {
+                    System.out.println("Sorry! Already rented.");
+                } else {
+                    shelfBook.rented();
+                    System.out.println("Rented you the book! Have fun!");
+                }
+            }
+        }
+        if(!inCatalog) {
+            System.out.println("Sorry, not available in our catalog!");
+        }
+    }
+
+    private void printAvailableBooks() {
+        for (Book shelfBook : bookList) {
+            if (!shelfBook.isBorrowed()) {
+                System.out.println(shelfBook.getTitle());
+            }
+        }
+    }
+
+    private void returnBook(String returnedBook) {
+        boolean inCatalog = false;
+        for (Book shelfBook : bookList) {
+            if (shelfBook.getTitle().equalsIgnoreCase(returnedBook)) {
+                inCatalog = true;
+                if (shelfBook.isBorrowed()) {
+                    System.out.println("This book is checked in. Thanks!");
+                    shelfBook.returned();
+                }else System.out.println("We, uh, weren't missing that one, but thanks...");
+            }
+        }
+        if(!inCatalog){
+            System.out.println("Sorry, I've never heard of that book. You can keep it!");
+        }
+    }
+
 }
